@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Commodity, Market, Price
+from .models import User, Commodity, Market, Price, Listing
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,3 +36,19 @@ class PriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Price
         fields = '__all__' 
+
+class ListingSerializer(serializers.ModelSerializer):
+    farmer_name = serializers.CharField(source='farmer.username', read_only=True)
+
+    class Meta:
+        model = Listing
+        fields = ['id', 'farmer', 'farmer_name', 'commodity', 'quantity', 'price', 
+                 'description', 'status', 'created_at', 'updated_at']
+        read_only_fields = ('farmer', 'created_at', 'updated_at')
+
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except Exception as e:
+            print(f"Error in serializer create: {str(e)}")  # For debugging
+            raise 

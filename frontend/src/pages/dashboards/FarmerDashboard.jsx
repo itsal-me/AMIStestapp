@@ -1,4 +1,12 @@
+import { useState } from "react";
+import MarketPrices from "../../components/market/MarketPrices";
+import BuyerDirectory from "../../components/directory/BuyerDirectory";
+import { formatCurrency } from "../../utils/currency";
+import ProductListings from "../../components/listings/ProductListings";
+
 function FarmerDashboard() {
+    const [activeSection, setActiveSection] = useState(null);
+
     return (
         <div className="max-w-7xl mx-auto px-6 py-8">
             <div className="mb-8">
@@ -12,7 +20,18 @@ function FarmerDashboard() {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <button className="card p-6 text-left hover:border-primary-500/30">
+                <button
+                    className={`card p-6 text-left hover:border-primary-500/30 transition-all duration-300 ${
+                        activeSection === "prices"
+                            ? "border-primary-500 shadow-lg"
+                            : ""
+                    }`}
+                    onClick={() =>
+                        setActiveSection(
+                            activeSection === "prices" ? null : "prices"
+                        )
+                    }
+                >
                     <div className="flex items-center mb-4">
                         <div className="feature-icon">
                             <svg
@@ -38,7 +57,18 @@ function FarmerDashboard() {
                     </p>
                 </button>
 
-                <button className="card p-6 text-left hover:border-primary-500/30">
+                <button
+                    className={`card p-6 text-left hover:border-primary-500/30 transition-all duration-300 ${
+                        activeSection === "buyers"
+                            ? "border-primary-500 shadow-lg"
+                            : ""
+                    }`}
+                    onClick={() =>
+                        setActiveSection(
+                            activeSection === "buyers" ? null : "buyers"
+                        )
+                    }
+                >
                     <div className="flex items-center mb-4">
                         <div className="feature-icon">
                             <svg
@@ -64,7 +94,18 @@ function FarmerDashboard() {
                     </p>
                 </button>
 
-                <button className="card p-6 text-left hover:border-primary-500/30">
+                <button
+                    className={`card p-6 text-left hover:border-primary-500/30 transition-all duration-300 ${
+                        activeSection === "listings"
+                            ? "border-primary-500 shadow-lg"
+                            : ""
+                    }`}
+                    onClick={() =>
+                        setActiveSection(
+                            activeSection === "listings" ? null : "listings"
+                        )
+                    }
+                >
                     <div className="flex items-center mb-4">
                         <div className="feature-icon">
                             <svg
@@ -82,7 +123,7 @@ function FarmerDashboard() {
                             </svg>
                         </div>
                         <span className="ml-3 font-semibold text-light-900">
-                            My Listings
+                            My Product Listings
                         </span>
                     </div>
                     <p className="text-light-700 text-sm">
@@ -90,6 +131,94 @@ function FarmerDashboard() {
                     </p>
                 </button>
             </div>
+
+            {/* Dynamic Content Section */}
+            {activeSection === "prices" && (
+                <div className="card p-6 animate-fadeIn">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-light-900">
+                            Current Market Prices
+                        </h2>
+                        <button
+                            onClick={() => setActiveSection(null)}
+                            className="text-light-700 hover:text-primary-600 transition-colors"
+                        >
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <MarketPrices />
+                </div>
+            )}
+
+            {activeSection === "buyers" && (
+                <div className="card p-6 animate-fadeIn">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-light-900">
+                            Buyer Directory
+                        </h2>
+                        <button
+                            onClick={() => setActiveSection(null)}
+                            className="text-light-700 hover:text-primary-600 transition-colors"
+                        >
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <BuyerDirectory />
+                </div>
+            )}
+
+            {activeSection === "listings" && (
+                <div className="card p-6 animate-fadeIn">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-light-900">
+                            My Product Listings
+                        </h2>
+                        <button
+                            onClick={() => setActiveSection(null)}
+                            className="text-light-700 hover:text-primary-600 transition-colors"
+                        >
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <ProductListings />
+                </div>
+            )}
 
             {/* Market Overview */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

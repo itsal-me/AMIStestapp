@@ -1,3 +1,5 @@
+import { formatCurrency } from "../../utils/currency";
+
 function TraderDashboard() {
     return (
         <div className="max-w-7xl mx-auto px-6 py-8">
@@ -107,7 +109,9 @@ function TraderDashboard() {
                     <div className="space-y-4">
                         <div className="flex items-center text-light-700">
                             <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
-                            <p>Purchased 100kg Rice from Farmer John</p>
+                            <p>
+                                Purchased 100kg Rice at {formatCurrency(5000)}
+                            </p>
                         </div>
                         <div className="flex items-center text-light-700">
                             <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
