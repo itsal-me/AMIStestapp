@@ -1,31 +1,187 @@
+import { Link } from "react-router-dom";
+
 function Home() {
     return (
-        <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Hero Section */}
-            <div className="text-center mb-20">
-                <span className="text-primary-600 font-semibold text-lg mb-4 block">
-                    Agricultural Market Information System
-                </span>
-                <h1 className="text-6xl font-bold mb-8 heading-gradient max-w-4xl mx-auto">
-                    Empowering Farmers with Real-Time Market Insights
+            <div className="text-center py-16 sm:py-20">
+                <h1 className="text-4xl font-bold text-light-900 sm:text-5xl md:text-6xl">
+                    Welcome to AgriConnect
                 </h1>
-                <p className="text-xl text-light-700 max-w-2xl mx-auto mb-10">
-                    Make informed decisions with real-time market data and
-                    connect directly with buyers
+                <p className="mt-6 text-xl text-light-700 max-w-3xl mx-auto">
+                    Bridging the gap between farmers and traders. Empowering
+                    agricultural commerce through technology.
                 </p>
-                <div className="flex justify-center gap-4">
-                    <button className="btn-primary">Get Started</button>
-                    <button className="btn-secondary">Learn More</button>
+                <div className="mt-10 flex justify-center gap-4">
+                    <Link to="/login" className="btn-primary">
+                        Get Started
+                    </Link>
+                    <Link to="/register" className="btn-secondary">
+                        Create Account
+                    </Link>
                 </div>
             </div>
 
-            {/* Features Grid */}
-            <div className="grid md:grid-cols-2 gap-8 mb-16">
-                <div className="card p-8 group">
-                    <div className="flex items-start mb-8">
-                        <div className="feature-icon">
+            {/* About Section */}
+            <div className="py-12">
+                <div className="text-center mb-12">
+                    <h2 className="text-3xl font-bold text-light-900">
+                        Why AgriConnect?
+                    </h2>
+                    <p className="mt-4 text-lg text-light-700">
+                        We're revolutionizing agricultural trade by creating a
+                        direct connection between farmers and traders
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="card p-6">
+                        <h3 className="text-xl font-semibold text-light-900 mb-4">
+                            For Farmers
+                        </h3>
+                        <ul className="space-y-3 text-light-700">
+                            <li className="flex items-start">
+                                <svg
+                                    className="w-6 h-6 text-green-500 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                <span>
+                                    Direct access to traders - no middlemen
+                                    involved
+                                </span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg
+                                    className="w-6 h-6 text-green-500 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                <span>
+                                    List your products and set your own prices
+                                </span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg
+                                    className="w-6 h-6 text-green-500 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                <span>
+                                    Access real-time market prices to make
+                                    informed decisions
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="card p-6">
+                        <h3 className="text-xl font-semibold text-light-900 mb-4">
+                            For Traders
+                        </h3>
+                        <ul className="space-y-3 text-light-700">
+                            <li className="flex items-start">
+                                <svg
+                                    className="w-6 h-6 text-green-500 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                <span>
+                                    Find and connect with verified farmers
+                                    directly
+                                </span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg
+                                    className="w-6 h-6 text-green-500 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                <span>
+                                    Browse a wide variety of agricultural
+                                    products
+                                </span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg
+                                    className="w-6 h-6 text-green-500 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                                <span>
+                                    Make secure transactions with trusted
+                                    sellers
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {/* Features Section */}
+            <div className="py-12 border-t border-light-200">
+                <div className="text-center mb-12">
+                    <h2 className="text-3xl font-bold text-light-900">
+                        Key Features
+                    </h2>
+                    <p className="mt-4 text-lg text-light-700">
+                        Everything you need to streamline agricultural trade
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="card p-6">
+                        <div className="text-primary-600 mb-4">
                             <svg
-                                className="w-6 h-6"
+                                className="w-8 h-8"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -34,86 +190,23 @@ function Home() {
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth="2"
-                                    d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
+                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
                                 />
                             </svg>
                         </div>
-                        <div className="ml-6">
-                            <h2 className="text-2xl font-semibold text-light-900 mb-3">
-                                For Farmers
-                            </h2>
-                            <p className="text-light-700 mb-6">
-                                Get real-time market insights and make informed
-                                decisions about when and where to sell your
-                                produce
-                            </p>
-                            <ul className="space-y-4">
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Live market prices from multiple markets
-                                </li>
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Historical price trends and analytics
-                                </li>
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Direct connection with verified traders
-                                </li>
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Seasonal price pattern insights
-                                </li>
-                            </ul>
-                        </div>
+                        <h3 className="text-xl font-semibold text-light-900 mb-2">
+                            Secure Transactions
+                        </h3>
+                        <p className="text-light-700">
+                            Safe and transparent trading platform with verified
+                            users and secure payment options
+                        </p>
                     </div>
-                </div>
 
-                <div className="card p-8 group">
-                    <div className="flex items-start mb-8">
-                        <div className="feature-icon">
+                    <div className="card p-6">
+                        <div className="text-primary-600 mb-4">
                             <svg
-                                className="w-6 h-6"
+                                className="w-8 h-8"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -122,101 +215,43 @@ function Home() {
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth="2"
-                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                                 />
                             </svg>
                         </div>
-                        <div className="ml-6">
-                            <h2 className="text-2xl font-semibold text-light-900 mb-3">
-                                For Traders
-                            </h2>
-                            <p className="text-light-700 mb-6">
-                                Access a wide network of farmers and get
-                                detailed market analytics to optimize your
-                                trading decisions
-                            </p>
-                            <ul className="space-y-4">
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Comprehensive farmer directory
-                                </li>
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Market price comparison tools
-                                </li>
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Advanced market analytics
-                                </li>
-                                <li className="flex items-center text-light-700 hover:text-primary-600 transition-colors duration-300">
-                                    <svg
-                                        className="w-5 h-5 text-primary-500 mr-3"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                    Supply chain optimization
-                                </li>
-                            </ul>
-                        </div>
+                        <h3 className="text-xl font-semibold text-light-900 mb-2">
+                            Product Management
+                        </h3>
+                        <p className="text-light-700">
+                            Easy-to-use tools for listing, managing, and
+                            tracking agricultural products
+                        </p>
                     </div>
-                </div>
-            </div>
 
-            {/* Stats Section */}
-            <div className="grid grid-cols-3 gap-8 mb-20">
-                <div className="card p-8 text-center">
-                    <div className="text-4xl font-bold text-primary-600 mb-2">
-                        5000+
+                    <div className="card p-6">
+                        <div className="text-primary-600 mb-4">
+                            <svg
+                                className="w-8 h-8"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-semibold text-light-900 mb-2">
+                            Real-time Updates
+                        </h3>
+                        <p className="text-light-700">
+                            Stay informed with live market prices and product
+                            availability updates
+                        </p>
                     </div>
-                    <div className="text-light-700">Active Farmers</div>
-                </div>
-                <div className="card p-8 text-center">
-                    <div className="text-4xl font-bold text-primary-600 mb-2">
-                        200+
-                    </div>
-                    <div className="text-light-700">Markets Connected</div>
-                </div>
-                <div className="card p-8 text-center">
-                    <div className="text-4xl font-bold text-primary-600 mb-2">
-                        ₹10M+
-                    </div>
-                    <div className="text-light-700">Daily Transactions</div>
                 </div>
             </div>
         </div>

@@ -1,11 +1,33 @@
 import { useState } from "react";
 import MarketPrices from "../../components/market/MarketPrices";
 import BuyerDirectory from "../../components/directory/BuyerDirectory";
-import { formatCurrency } from "../../utils/currency";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 import ProductListings from "../../components/listings/ProductListings";
 
 function FarmerDashboard() {
     const [activeSection, setActiveSection] = useState(null);
+
+    // Sample data - you can replace with real data later
+    const recentActivities = [
+        {
+            id: 1,
+            action: "Listed",
+            quantity: "50",
+            commodity: "Rice",
+            price: 4500,
+            date: new Date(),
+        },
+        {
+            id: 2,
+            action: "Price updated in Market B",
+            date: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+        },
+        {
+            id: 3,
+            action: "Trader John viewed your listing",
+            date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+        },
+    ];
 
     return (
         <div className="max-w-7xl mx-auto px-6 py-8">
@@ -14,7 +36,7 @@ function FarmerDashboard() {
                     Farmer Dashboard
                 </h1>
                 <p className="text-light-700">
-                    Welcome back! Here's your market overview.
+                    Welcome back! Here's your farming overview.
                 </p>
             </div>
 
@@ -224,10 +246,10 @@ function FarmerDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="card p-6">
                     <h2 className="text-xl font-semibold text-light-900 mb-4">
-                        Price Trends
+                        Sales Overview
                     </h2>
                     <div className="h-64 flex items-center justify-center text-light-700">
-                        Price chart will be implemented here
+                        Sales chart will be implemented here
                     </div>
                 </div>
 
@@ -236,18 +258,30 @@ function FarmerDashboard() {
                         Recent Activity
                     </h2>
                     <div className="space-y-4">
-                        <div className="flex items-center text-light-700">
-                            <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
-                            <p>Market price for Rice increased by 5%</p>
-                        </div>
-                        <div className="flex items-center text-light-700">
-                            <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
-                            <p>New buyer interested in your wheat listing</p>
-                        </div>
-                        <div className="flex items-center text-light-700">
-                            <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
-                            <p>Price alert: Corn prices are trending up</p>
-                        </div>
+                        {recentActivities.map((activity) => (
+                            <div
+                                key={activity.id}
+                                className="flex items-center justify-between text-light-700"
+                            >
+                                <div className="flex items-center">
+                                    <div className="w-2 h-2 bg-primary-500 rounded-full mr-3"></div>
+                                    <p>
+                                        {activity.quantity && activity.commodity
+                                            ? `${activity.action} ${
+                                                  activity.quantity
+                                              }kg ${
+                                                  activity.commodity
+                                              } at ${formatCurrency(
+                                                  activity.price
+                                              )}`
+                                            : activity.action}
+                                    </p>
+                                </div>
+                                <span className="text-sm text-light-600">
+                                    {formatDate(activity.date)}
+                                </span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

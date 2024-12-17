@@ -3,10 +3,11 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MarketPrices from "./pages/MarketPrices";
-import FarmerDashboard from "./pages/farmer/Dashboard";
+import FarmerDashboard from "./pages/dashboards/FarmerDashboard";
 import TraderDashboard from "./pages/dashboards/TraderDashboard";
 import Directory from "./pages/Directory";
 import Analytics from "./pages/Analytics";
@@ -21,7 +22,11 @@ function App() {
                     <Navbar />
                     <main className="flex-grow container mx-auto px-4 py-8">
                         <Routes>
-                            <Route path="/" element={<MarketPrices />} />
+                            <Route path="/" element={<Home />} />
+                            <Route
+                                path="/market-prices"
+                                element={<MarketPrices />}
+                            />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
                             <Route
