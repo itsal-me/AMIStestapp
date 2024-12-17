@@ -10,6 +10,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import action
+from django.db.models import Avg
+from django.db.models.functions import TruncDate
 
 # Create your views here.
 
@@ -198,3 +200,49 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return User.objects.all().order_by('-date_joined')
+
+class PriceViewSet(viewsets.ModelViewSet):
+    queryset = Price.objects.all()
+    serializer_class = PriceSerializer
+
+    @action(detail=False, url_path='trends', methods=['get'])
+    def trends(self, request):
+        # Get the last 30 days of price data
+        prices = Price.objects.annotate(
+            trend_date=TruncDate('date')
+        ).values(
+            'trend_date',
+            'commodity__name'
+        ).annotate(
+            price=Avg('price')
+        ).order_by('trend_date')[:30]
+
+        # Format the data for the frontend
+        formatted_data = []
+        for price in prices:
+            formatted_data.append({
+                'date': price['trend_date'],
+                'commodity': price['commodity__name'],
+                'price': float(price['price'])
+            })
+
+        return Response(formatted_data)
+
+    @action(detail=True, url_path='commodity-trends', methods=['get'])
+    def commodity_trends(self, request, pk=None):
+        prices = Price.objects.filter(
+            commodity_id=pk
+        ).annotate(
+            trend_date=TruncDate('date')
+        ).values('trend_date').annotate(
+            price=Avg('price')
+        ).order_by('trend_date')[:30]
+
+        formatted_data = []
+        for price in prices:
+            formatted_data.append({
+                'date': price['trend_date'],
+                'price': float(price['price'])
+            })
+
+        return Response(formatted_data)

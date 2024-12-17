@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MarketPrices from "../../components/market/MarketPrices";
+import PriceTrends from "../../components/market/PriceTrends";
 import BuyerDirectory from "../../components/directory/BuyerDirectory";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 import ProductListings from "../../components/listings/ProductListings";
@@ -246,11 +247,9 @@ function FarmerDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="card p-6">
                     <h2 className="text-xl font-semibold text-light-900 mb-4">
-                        Sales Overview
+                        Price Trends
                     </h2>
-                    <div className="h-64 flex items-center justify-center text-light-700">
-                        Sales chart will be implemented here
-                    </div>
+                    <PriceTrends />
                 </div>
 
                 <div className="card p-6">
