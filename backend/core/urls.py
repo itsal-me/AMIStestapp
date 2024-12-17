@@ -62,4 +62,20 @@ urlpatterns = [
     path('users/<int:pk>/', views.UserViewSet.as_view({
         'patch': 'partial_update',
     }), name='user-detail'),
+    
+    # Recommendation endpoints
+    path('recommendations/', views.RecommendationViewSet.as_view({
+        'get': 'list',
+        'post': 'create'
+    }), name='recommendations'),
+    path('recommendations/<int:pk>/', views.RecommendationViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'patch': 'partial_update',
+        'delete': 'destroy'
+    }), name='recommendation-detail'),
+    path('recommendations/<int:pk>/assign-farmers/', views.RecommendationViewSet.as_view({
+        'post': 'assign_farmers'
+    }), name='recommendation-assign-farmers'),
+    path('farmers/', views.get_farmers, name='farmers'),
 ] 

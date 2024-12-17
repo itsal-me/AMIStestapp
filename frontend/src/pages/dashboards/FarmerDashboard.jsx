@@ -4,6 +4,7 @@ import PriceTrends from "../../components/market/PriceTrends";
 import BuyerDirectory from "../../components/directory/BuyerDirectory";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 import ProductListings from "../../components/listings/ProductListings";
+import Recommendations from "../../components/farmer/Recommendations";
 
 function FarmerDashboard() {
     const [activeSection, setActiveSection] = useState(null);
@@ -153,6 +154,45 @@ function FarmerDashboard() {
                         Manage your product listings
                     </p>
                 </button>
+
+                <button
+                    className={`card p-6 text-left hover:border-primary-500/30 transition-all duration-300 ${
+                        activeSection === "recommendations"
+                            ? "border-primary-500 shadow-lg"
+                            : ""
+                    }`}
+                    onClick={() =>
+                        setActiveSection(
+                            activeSection === "recommendations"
+                                ? null
+                                : "recommendations"
+                        )
+                    }
+                >
+                    <div className="flex items-center mb-4">
+                        <div className="feature-icon">
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                        </div>
+                        <span className="ml-3 font-semibold text-light-900">
+                            Recommendations
+                        </span>
+                    </div>
+                    <p className="text-light-700 text-sm">
+                        View personalized recommendations
+                    </p>
+                </button>
             </div>
 
             {/* Dynamic Content Section */}
@@ -240,6 +280,35 @@ function FarmerDashboard() {
                         </button>
                     </div>
                     <ProductListings />
+                </div>
+            )}
+
+            {activeSection === "recommendations" && (
+                <div className="card p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-light-900">
+                            Recommendations for You
+                        </h2>
+                        <button
+                            onClick={() => setActiveSection(null)}
+                            className="text-light-600 hover:text-light-900"
+                        >
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <Recommendations />
                 </div>
             )}
 

@@ -4,14 +4,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .serializers import UserSerializer, PriceSerializer, ListingSerializer, CommoditySerializer, MarketSerializer
-from .models import User, Price, Listing, Commodity, Market
+from .serializers import UserSerializer, PriceSerializer, ListingSerializer, CommoditySerializer, MarketSerializer, RecommendationSerializer
+from .models import User, Price, Listing, Commodity, Market, Recommendation
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.decorators import action
 from django.db.models import Avg
 from django.db.models.functions import TruncDate
+from django.db.models import Q
 
 # Create your views here.
 
@@ -168,6 +169,9 @@ class CommodityViewSet(viewsets.ModelViewSet):
     serializer_class = CommoditySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return Commodity.objects.all().order_by('name')
+
     def perform_create(self, serializer):
         try:
             serializer.save()
@@ -246,3 +250,33 @@ class PriceViewSet(viewsets.ModelViewSet):
             })
 
         return Response(formatted_data)
+
+class RecommendationViewSet(viewsets.ModelViewSet):
+    serializer_class = RecommendationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.user_type == 'ADMIN':
+            return Recommendation.objects.all()
+        elif self.request.user.user_type == 'FARMER':
+            return Recommendation.objects.filter(
+                Q(target_farmers=self.request.user) | Q(target_farmers=None),
+                is_active=True
+            )
+        return Recommendation.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_farmers(request):
+    if request.user.user_type != 'ADMIN':
+        return Response(
+            {"error": "Not authorized"}, 
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    farmers = User.objects.filter(user_type='FARMER')
+    serializer = UserSerializer(farmers, many=True)
+    return Response(serializer.data)

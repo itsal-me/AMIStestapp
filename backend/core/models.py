@@ -64,3 +64,25 @@ class Listing(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+class Recommendation(models.Model):
+    PRIORITY_CHOICES = (
+        ('HIGH', 'High'),
+        ('MEDIUM', 'Medium'),
+        ('LOW', 'Low'),
+    )
+
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    commodity = models.ForeignKey(Commodity, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='MEDIUM')
+    is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_recommendations')
+    target_farmers = models.ManyToManyField(User, related_name='received_recommendations', blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title

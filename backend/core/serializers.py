@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Commodity, Market, Price, Listing
+from .models import User, Commodity, Market, Price, Listing, Recommendation
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,3 +69,18 @@ class ListingSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(f"Error in serializer create: {str(e)}")  # For debugging
             raise 
+
+class RecommendationSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source='created_by.username', read_only=True)
+    commodity_name = serializers.CharField(source='commodity.name', read_only=True)
+    target_farmers = serializers.PrimaryKeyRelatedField(
+        many=True, 
+        queryset=User.objects.filter(user_type='FARMER'),
+        required=False
+    )
+
+    class Meta:
+        model = Recommendation
+        fields = ['id', 'title', 'content', 'commodity', 'commodity_name', 
+                 'created_at', 'priority', 'is_active', 'created_by_name', 'target_farmers']
+        read_only_fields = ('created_by',)

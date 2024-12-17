@@ -4,6 +4,7 @@ import UserManagement from "../../components/admin/UserManagement";
 import MarketSettings from "../../components/admin/MarketSettings";
 import CommodityManagement from "../../components/admin/CommodityManagement";
 import { useAuth } from "../../context/AuthContext";
+import RecommendationManagement from "../../components/admin/RecommendationManagement";
 
 function AdminDashboard() {
     const [activeSection, setActiveSection] = useState(null);
@@ -171,6 +172,45 @@ function AdminDashboard() {
                         Add and manage commodity types
                     </p>
                 </button>
+
+                <button
+                    className={`card p-6 text-left hover:border-primary-500/30 transition-all duration-300 ${
+                        activeSection === "recommendations"
+                            ? "border-primary-500 shadow-lg"
+                            : ""
+                    }`}
+                    onClick={() =>
+                        setActiveSection(
+                            activeSection === "recommendations"
+                                ? null
+                                : "recommendations"
+                        )
+                    }
+                >
+                    <div className="flex items-center mb-4">
+                        <div className="feature-icon">
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                                />
+                            </svg>
+                        </div>
+                        <span className="ml-3 font-semibold text-light-900">
+                            Recommendations
+                        </span>
+                    </div>
+                    <p className="text-light-700 text-sm">
+                        Manage recommendations for farmers
+                    </p>
+                </button>
             </div>
 
             {/* Active Section Content */}
@@ -287,6 +327,35 @@ function AdminDashboard() {
                         </button>
                     </div>
                     <CommodityManagement />
+                </div>
+            )}
+
+            {activeSection === "recommendations" && (
+                <div className="card p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-light-900">
+                            Manage Recommendations
+                        </h2>
+                        <button
+                            onClick={() => setActiveSection(null)}
+                            className="text-light-600 hover:text-light-900"
+                        >
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <RecommendationManagement />
                 </div>
             )}
 
