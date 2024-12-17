@@ -4,11 +4,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .serializers import UserSerializer, PriceSerializer, ListingSerializer
-from .models import User, Price, Listing
+from .serializers import UserSerializer, PriceSerializer, ListingSerializer, CommoditySerializer, MarketSerializer
+from .models import User, Price, Listing, Commodity, Market
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.decorators import action
 
 # Create your views here.
 
@@ -40,39 +41,55 @@ def register_user(request):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def login_user(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user = authenticate(username=username, password=password)
-    
-    if user:
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'user': {
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'user_type': user.user_type,
-                'phone': user.phone,
-                'address': user.address,
-            },
-            'access': str(refresh.access_token),
-            'refresh': str(refresh),
-        })
-    return Response(
-        {'error': 'Invalid credentials'}, 
-        status=status.HTTP_401_UNAUTHORIZED
-    )
+    try:
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        user = authenticate(username=username, password=password)
+        
+        if user is not None:
+            if user.is_superuser and not user.user_type:
+                user.user_type = 'ADMIN'
+                user.save()
+                
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            
+            return Response({
+                'user': UserSerializer(user).data,
+                'access': access_token,
+                'refresh': str(refresh),
+            })
+        else:
+            return Response(
+                {'error': 'Invalid credentials'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+    except Exception as e:
+        print(f"Login error: {str(e)}")  # For debugging
+        return Response(
+            {'error': 'Login failed', 'details': str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @permission_classes([permissions.IsAuthenticated])
 def get_prices(request):
     try:
-        prices = Price.objects.select_related('commodity', 'market').all()
-        serializer = PriceSerializer(prices, many=True)
-        return Response(serializer.data)
+        if request.method == 'GET':
+            prices = Price.objects.select_related('commodity', 'market').all()
+            serializer = PriceSerializer(prices, many=True)
+            return Response(serializer.data)
+        elif request.method == 'POST':
+            serializer = PriceSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
+        print(f"Price operation error: {str(e)}")  # For debugging
         return Response(
-            {'error': 'Failed to fetch prices'},
+            {'error': 'Operation failed', 'details': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
@@ -143,3 +160,41 @@ def logout_user(request):
         return Response(status=status.HTTP_205_RESET_CONTENT)
     except TokenError:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class CommodityViewSet(viewsets.ModelViewSet):
+    queryset = Commodity.objects.all()
+    serializer_class = CommoditySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        try:
+            serializer.save()
+        except Exception as e:
+            print(f"Error creating commodity: {str(e)}")
+            raise
+
+class MarketViewSet(viewsets.ModelViewSet):
+    serializer_class = MarketSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.action == 'list':
+            # For regular list action, only return active markets
+            return Market.objects.filter(is_active=True)
+        # For other actions (retrieve, update, etc.), return all markets
+        return Market.objects.all()
+
+    @action(detail=False, methods=['get'])
+    def all(self, request):
+        # New endpoint to get all markets regardless of status
+        markets = Market.objects.all()
+        serializer = self.get_serializer(markets, many=True)
+        return Response(serializer.data)
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        return User.objects.all().order_by('-date_joined')

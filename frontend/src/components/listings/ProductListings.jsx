@@ -13,6 +13,7 @@ function ProductListings() {
         price: "",
         description: "",
     });
+    const [editingListing, setEditingListing] = useState(null);
 
     useEffect(() => {
         fetchListings();
@@ -41,40 +42,44 @@ function ProductListings() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch(
-                "http://localhost:8000/api/listings/",
-                {
-                    method: "POST",
-                    headers: {
-                        ...getAuthHeaders(),
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        ...newListing,
-                        quantity: parseFloat(newListing.quantity),
-                        price: parseFloat(newListing.price),
-                    }),
-                }
-            );
-            const data = await response.json();
+        if (editingListing) {
+            await handleUpdate(e);
+        } else {
+            try {
+                const response = await fetch(
+                    "http://localhost:8000/api/listings/",
+                    {
+                        method: "POST",
+                        headers: {
+                            ...getAuthHeaders(),
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            ...newListing,
+                            quantity: parseFloat(newListing.quantity),
+                            price: parseFloat(newListing.price),
+                        }),
+                    }
+                );
+                const data = await response.json();
 
-            if (response.ok) {
-                setListings([...listings, data]);
-                setShowAddForm(false);
-                setNewListing({
-                    commodity: "",
-                    quantity: "",
-                    price: "",
-                    description: "",
-                });
-            } else {
-                setError(data.error || "Failed to create listing");
-                console.error("Server error:", data);
+                if (response.ok) {
+                    setListings([...listings, data]);
+                    setShowAddForm(false);
+                    setNewListing({
+                        commodity: "",
+                        quantity: "",
+                        price: "",
+                        description: "",
+                    });
+                } else {
+                    setError(data.error || "Failed to create listing");
+                    console.error("Server error:", data);
+                }
+            } catch (err) {
+                console.error("Network error:", err);
+                setError("Failed to create listing");
             }
-        } catch (err) {
-            console.error("Network error:", err);
-            setError("Failed to create listing");
         }
     };
 
@@ -100,6 +105,72 @@ function ProductListings() {
         }
     };
 
+    const handleEdit = (listing) => {
+        setEditingListing(listing);
+        setNewListing({
+            commodity: listing.commodity,
+            quantity: listing.quantity,
+            price: listing.price,
+            description: listing.description,
+        });
+        setShowAddForm(true);
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(
+                `http://localhost:8000/api/listings/${editingListing.id}/`,
+                {
+                    method: "PUT",
+                    headers: {
+                        ...getAuthHeaders(),
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ...newListing,
+                        quantity: parseFloat(newListing.quantity),
+                        price: parseFloat(newListing.price),
+                    }),
+                }
+            );
+            const data = await response.json();
+
+            if (response.ok) {
+                setListings(
+                    listings.map((listing) =>
+                        listing.id === editingListing.id ? data : listing
+                    )
+                );
+                setShowAddForm(false);
+                setEditingListing(null);
+                setNewListing({
+                    commodity: "",
+                    quantity: "",
+                    price: "",
+                    description: "",
+                });
+            } else {
+                setError(data.error || "Failed to update listing");
+                console.error("Server error:", data);
+            }
+        } catch (err) {
+            console.error("Network error:", err);
+            setError("Failed to update listing");
+        }
+    };
+
+    const handleCancel = () => {
+        setShowAddForm(false);
+        setEditingListing(null);
+        setNewListing({
+            commodity: "",
+            quantity: "",
+            price: "",
+            description: "",
+        });
+    };
+
     if (loading)
         return (
             <div className="flex justify-center items-center h-64">
@@ -117,7 +188,7 @@ function ProductListings() {
                     Your Active Listings
                 </h3>
                 <button
-                    onClick={() => setShowAddForm(!showAddForm)}
+                    onClick={() => handleCancel()}
                     className="btn-primary text-sm"
                 >
                     {showAddForm ? "Cancel" : "Add New Listing"}
@@ -197,7 +268,7 @@ function ProductListings() {
                         ></textarea>
                     </div>
                     <button type="submit" className="btn-primary w-full">
-                        Create Listing
+                        {editingListing ? "Update Listing" : "Create Listing"}
                     </button>
                 </form>
             )}
@@ -214,24 +285,44 @@ function ProductListings() {
                                     {listing.quantity}kg available
                                 </p>
                             </div>
-                            <button
-                                onClick={() => handleDelete(listing.id)}
-                                className="text-red-500 hover:text-red-600"
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                            <div className="flex space-x-2">
+                                <button
+                                    onClick={() => handleEdit(listing)}
+                                    className="text-primary-600 hover:text-primary-700"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                    />
-                                </svg>
-                            </button>
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                        />
+                                    </svg>
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(listing.id)}
+                                    className="text-red-500 hover:text-red-600"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <p className="text-light-700">{listing.description}</p>
                         <div className="flex justify-between items-center text-light-700">
@@ -255,9 +346,6 @@ function ProductListings() {
                             >
                                 {listing.status}
                             </span>
-                            <button className="btn-secondary text-sm">
-                                Edit Listing
-                            </button>
                         </div>
                     </div>
                 ))}

@@ -4,12 +4,19 @@ from .models import User, Commodity, Market, Price, Listing
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'user_type', 'phone', 'address')
+        fields = ('id', 'username', 'email', 'user_type', 'phone', 'address', 'is_superuser')
         extra_kwargs = {
             'password': {'write_only': True},
             'phone': {'required': False},
             'address': {'required': False},
         }
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Ensure superusers are treated as ADMIN type
+        if instance.is_superuser and not instance.user_type:
+            data['user_type'] = 'ADMIN'
+        return data
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -22,7 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
 class CommoditySerializer(serializers.ModelSerializer):
     class Meta:
         model = Commodity
-        fields = '__all__'
+        fields = ['id', 'name', 'unit', 'description', 'created_at', 'updated_at']
+        read_only_fields = ('created_at', 'updated_at')
 
 class MarketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,7 +43,16 @@ class PriceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Price
-        fields = '__all__' 
+        fields = ['id', 'commodity', 'market', 'price', 'date', 'commodity_name', 'market_name']
+        read_only_fields = ('date',)
+
+    def validate(self, data):
+        """
+        Check that the price is positive
+        """
+        if data['price'] <= 0:
+            raise serializers.ValidationError("Price must be greater than zero")
+        return data
 
 class ListingSerializer(serializers.ModelSerializer):
     farmer_name = serializers.CharField(source='farmer.username', read_only=True)

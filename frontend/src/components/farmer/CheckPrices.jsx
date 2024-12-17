@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { getAuthHeaders } from "../utils/api";
-import { formatCurrency, formatDate } from "../utils/formatters";
+import { getAuthHeaders } from "../../utils/api";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
-function MarketPrices() {
+function CheckPrices() {
     const [prices, setPrices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -36,16 +36,13 @@ function MarketPrices() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-8">
-            <h1 className="text-2xl font-bold text-light-900 mb-6">
-                Market Prices
-            </h1>
+        <div className="space-y-6">
             {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6">
+                <div className="bg-red-50 text-red-600 p-4 rounded-xl">
                     {error}
                 </div>
             )}
-            <div className="card">
+            <div className="overflow-x-auto">
                 <table className="w-full">
                     <thead>
                         <tr className="bg-light-200">
@@ -79,4 +76,4 @@ function MarketPrices() {
     );
 }
 
-export default MarketPrices;
+export default CheckPrices;

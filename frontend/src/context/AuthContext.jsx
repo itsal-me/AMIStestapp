@@ -13,11 +13,10 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Function to refresh the access token
     const refreshToken = async () => {
         try {
-            const refresh = localStorage.getItem("refreshToken");
-            if (!refresh) return false;
+            const refresh = localStorage.getItem("refresh");
+            if (!refresh) throw new Error("No refresh token");
 
             const response = await fetch(
                 "http://localhost:8000/api/token/refresh/",
@@ -31,65 +30,64 @@ export const AuthProvider = ({ children }) => {
             );
             const data = await response.json();
 
-            if (response.ok) {
-                localStorage.setItem("token", data.access);
-                return true;
-            }
-            return false;
-        } catch (error) {
-            console.error("Token refresh failed:", error);
-            return false;
+            if (!response.ok) throw new Error(data.detail);
+
+            localStorage.setItem("token", data.access);
+            return data.access;
+        } catch (err) {
+            console.error("Token refresh failed:", err);
+            logout();
+            throw err;
         }
     };
 
-    // Function to check user's authentication status
-    const checkAuth = useCallback(async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setUser(null);
-            setLoading(false);
-            return false;
-        }
-
+    const fetchUser = useCallback(async () => {
         try {
             const response = await fetch("http://localhost:8000/api/user/", {
                 headers: getAuthHeaders(),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                setUser(data);
-                return true;
-            }
-
-            // If token is expired, try to refresh
-            const refreshed = await refreshToken();
-            if (refreshed) {
+            if (response.status === 401) {
+                // Token expired, try to refresh
+                const newToken = await refreshToken();
                 // Retry the request with new token
                 const retryResponse = await fetch(
                     "http://localhost:8000/api/user/",
                     {
-                        headers: getAuthHeaders(),
+                        headers: {
+                            ...getAuthHeaders(),
+                            Authorization: `Bearer ${newToken}`,
+                        },
                     }
                 );
-                if (retryResponse.ok) {
-                    const data = await retryResponse.json();
-                    setUser(data);
-                    return true;
-                }
+                if (!retryResponse.ok) throw new Error("Failed to fetch user");
+                const userData = await retryResponse.json();
+                setUser(userData);
+                return;
             }
 
-            // If refresh failed, clear everything
+            if (!response.ok) throw new Error("Failed to fetch user");
+
+            const data = await response.json();
+            setUser(data);
+        } catch (err) {
+            console.error("Error fetching user:", err);
             setUser(null);
             localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
-            return false;
-        } catch (error) {
-            console.error("Auth check failed:", error);
-            setUser(null);
-            return false;
+            localStorage.removeItem("refresh");
+        } finally {
+            setLoading(false);
         }
-    }, []); // Empty dependency array since it doesn't depend on any state/props
+    }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            fetchUser();
+        } else {
+            setLoading(false);
+        }
+    }, [fetchUser]);
 
     const login = async (credentials) => {
         try {
@@ -100,57 +98,44 @@ export const AuthProvider = ({ children }) => {
                 },
                 body: JSON.stringify(credentials),
             });
+
             const data = await response.json();
 
-            if (response.ok) {
-                setUser(data.user);
-                localStorage.setItem("token", data.access);
-                localStorage.setItem("refreshToken", data.refresh);
-                return { success: true, user: data.user };
+            if (!response.ok) {
+                throw new Error(data.error || "Login failed");
             }
-            return { success: false, error: data.error };
-        } catch (error) {
-            console.error("Login error:", error);
-            return { success: false, error: "Network error" };
+
+            localStorage.setItem("token", data.access);
+            localStorage.setItem("refresh", data.refresh);
+            setUser(data.user);
+            return data.user;
+        } catch (err) {
+            console.error("Login error:", err);
+            throw err;
         }
     };
 
     const logout = async () => {
         try {
-            const refreshToken = localStorage.getItem("refreshToken");
-            if (refreshToken) {
+            const refresh = localStorage.getItem("refresh");
+            if (refresh) {
                 await fetch("http://localhost:8000/api/logout/", {
                     method: "POST",
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify({
-                        refresh_token: refreshToken,
-                    }),
+                    headers: {
+                        ...getAuthHeaders(),
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ refresh_token: refresh }),
                 });
             }
-        } catch (error) {
-            console.error("Logout error:", error);
+        } catch (err) {
+            console.error("Logout error:", err);
         } finally {
             setUser(null);
             localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("refresh");
         }
     };
-
-    // Initial auth check and token refresh setup
-    useEffect(() => {
-        const initAuth = async () => {
-            setLoading(true);
-            await checkAuth();
-            setLoading(false);
-        };
-
-        initAuth();
-
-        // Set up token refresh interval
-        const refreshInterval = setInterval(refreshToken, 4 * 60 * 1000); // Refresh every 4 minutes
-
-        return () => clearInterval(refreshInterval);
-    }, [checkAuth]); // Only depend on checkAuth which is memoized
 
     return (
         <AuthContext.Provider value={{ user, login, logout, loading }}>

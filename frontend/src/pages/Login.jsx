@@ -8,22 +8,29 @@ function Login() {
         password: "",
     });
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
-        const result = await login(credentials);
-        if (result.success) {
-            if (result.user.user_type === "FARMER") {
+        try {
+            const user = await login(credentials);
+            if (user.user_type === "FARMER") {
                 navigate("/farmer/dashboard");
-            } else if (result.user.user_type === "TRADER") {
+            } else if (user.user_type === "TRADER") {
                 navigate("/trader/dashboard");
+            } else if (user.user_type === "ADMIN") {
+                navigate("/admin/dashboard");
             }
-        } else {
-            setError(result.error || "Invalid credentials");
+        } catch (err) {
+            console.error("Login error:", err);
+            setError(err.message || "Invalid credentials");
+        } finally {
+            setLoading(false);
         }
     };
 
